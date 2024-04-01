@@ -20,4 +20,4 @@ See the license file and License Folder for details
 - WebAssembly build powered by emscription SDK (https://emscripten.org/docs/introducing_emscripten/emscripten_license.html)
 
 ## Screenshots
-<img src="docs/Screenshot1.png" width="640" height="360">
+<img src="docs/Screenshot1.png" width="500" height="360">
