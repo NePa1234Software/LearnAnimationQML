@@ -7,8 +7,10 @@ import QtQuick.Timeline
 Rectangle {
 
     id: control
-    implicitWidth: 300
-    implicitHeight: 500
+    implicitWidth: 500
+    implicitHeight: 800
+    border.color: "navy"
+    border.width: 2
 
     property alias levelIn: inSlider.value
     onLevelInChanged: {
@@ -29,7 +31,19 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: 10
 
+        Rectangle { color: "orange"; Layout.fillWidth: true; height: 8 }
         Label { text: "Move the top slider..."; Layout.fillHeight: false; Layout.fillWidth: true  }
+        Switch {
+            id: animationSwitch
+            text: checked ? "Animate (ON)" : "Animate (OFF)"
+        }
+        Label {
+            text: "State: %1".arg(control.state)
+        }
+        Label {
+            text: control.rising ? "rising" : "falling"
+        }
+        Rectangle { color: "yellow"; Layout.fillWidth: true; height: 8 }
 
         GridLayout {
             Layout.fillWidth: true
@@ -44,11 +58,15 @@ Rectangle {
             }
 
             // Readonly display
-            Label { text: "Transition" }
+            CustomLabel {
+                text: "Transition"
+                tipText: "This animations uses the states and transitions.\n"+
+                         "States : no animation, moving, rising and falling are defined\n" +
+                         "Transitions: control the animations that are triggered on state change"
+            }
             CustomSlider{
                 id: stateSlider
                 Layout.fillWidth: true
-                // this value is solely handled by the states/transitions
                 // value: DEFAULT
             }
 
@@ -56,7 +74,11 @@ Rectangle {
             // Simple Behavior on NumberAnimation
             // used to smooth the property
             ///////////////////////////////////////////////////////////////////////////
-            Label { text: "NumberAnimation" }
+            CustomLabel {
+                text: "NumberAnimation"
+                tipText: "Behaviour on value .... with a NumberAnimation.\n"+
+                         "is the simplest to setup using a one-liner."
+            }
             CustomSlider{
                 id: numSlider
                 value: inSlider.value
@@ -70,11 +92,14 @@ Rectangle {
             // StandAlone activation of PropertyAnimation
             // Activation on some signal, e.g. when user presses the button
             ///////////////////////////////////////////////////////////////////////////
-            Button {
+            CustomButton {
                 text: "Click me!"
                 enabled: control.animating
                 Layout.fillWidth: true
                 onClicked: { manAnimator.start() }
+                tipText: "To use on demand animation, create an instance of a PropertyAnimation \n"+
+                         "(or any other Animation type), \n" +
+                         "and then call the start() method manually. We also demonstrate loops count 3."
 
                 // click PropertyAnimation<HERE> to get the lightbulb in QtCreator editor to get the animation dialog
                 PropertyAnimation {
@@ -97,7 +122,11 @@ Rectangle {
             // animation on or off. In this case when animation is allowed and the
             // slider is moved to the left (falling).
             ///////////////////////////////////////////////////////////////////////////
-            Label { text: "Optional" }
+            CustomLabel {
+                text: "Optional"
+                tipText: "Here we make use of the Bevaviour Item enabled property.\n" +
+                         "E.g. we only animate when the input value is falling."
+            }
             CustomSlider{
                 id: optSlider
                 value: inSlider.value
@@ -113,7 +142,11 @@ Rectangle {
             ///////////////////////////////////////////////////////////////////////////
             // Custom Behavior on
             ///////////////////////////////////////////////////////////////////////////
-            Label { text: "Custom Behavior" }
+            CustomLabel {
+                text: "Custom Behavior"
+                tipText: "Here we make our own custom Bevaviour Item with our own\n" +
+                         "specialized and reusable Behavour (e.g. delay, then animate)."
+            }
             CustomSlider{
                 id: customSlider
                 value: inSlider.value
@@ -126,26 +159,19 @@ Rectangle {
             ///////////////////////////////////////////////////////////////////////////
             // Timeline animation
             ///////////////////////////////////////////////////////////////////////////
-            Button {
+            CustomButton {
                 text: "Timeline start!"
                 enabled: control.animating
                 Layout.fillWidth: true
                 onClicked: { timelineAnimation.start() }
+                tipText: "Here we use the Timeline to precicely\n"+
+                         "control the sequence of animations. The TimeLine\n"+
+                         "pingPong property is set to true make a trip there and back again."
             }
             CustomSlider {
                 id: timelineSlider
                 Layout.fillWidth: true
             }
-        }
-        Switch {
-            id: animationSwitch
-            text: checked ? "Animate (ON)" : "Animate (OFF)"
-        }
-        Label {
-            text: "State: %1".arg(control.state)
-        }
-        Label {
-            text: control.rising ? "rising" : "falling"
         }
         Item { id: spacer; Layout.fillHeight: true }
     }
@@ -155,16 +181,18 @@ Rectangle {
         State {
             name: "no animation"
             when: !control.animating
-            // Make a new binding
             PropertyChanges {
+                // explicit false (default) - will make a new binding
+                // explicit: false
                 stateSlider.value: inSlider.value
             }
         },
         State {
             name: "moving"
             when: inSlider.pressed
-            // Break the binding so that it doesnt move
             PropertyChanges {
+                // explicit true - will ensure there is not a binding used,
+                // instead the property value is assigned
                 explicit: true
                 stateSlider.value: inSlider.value
             }
@@ -172,8 +200,9 @@ Rectangle {
         State {
             name: "rising"
             when: control.rising
-            // Break the binding so that it doesnt move
             PropertyChanges {
+                // explicit true - will ensure there is not a binding used,
+                // instead the property value is assigned
                 explicit: true
                 stateSlider.value: inSlider.value
             }
@@ -181,8 +210,8 @@ Rectangle {
         State {
             name: "falling"
             when: !control.rising
-            // Break the binding so that it doesnt move
             PropertyChanges {
+                // explicit - will ensure there is not a binding used, insteas the value is assigned
                 explicit: true
                 stateSlider.value: inSlider.value
             }
@@ -191,19 +220,21 @@ Rectangle {
     transitions: [
         Transition {
             to: "rising"
+            // click PropertyAnimation<HERE> to get the lightbulb in QtCreator editor to get the animation dialog
             PropertyAnimation {
                 to: control.levelIn
-                //onToChanged: restart()
                 target: stateSlider
                 property: "value"
-                duration: 100
+                easing.type: Easing.OutElastic
+                duration: 200
+                alwaysRunToEnd: true
             }
         },
         Transition {
             to: "falling"
+            // click PropertyAnimation<HERE> to get the lightbulb in QtCreator editor to get the animation dialog
             PropertyAnimation {
                 to: control.levelIn
-                //onToChanged: restart()
                 target: stateSlider
                 property: "value"
                 duration: 1000

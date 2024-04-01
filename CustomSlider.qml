@@ -1,10 +1,11 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Controls.Basic as T
 
 T.Slider{
     id: control
 
-    implicitWidth: 300
+    implicitWidth: 500
     property color color: "green"
     property color backgroundColor: "red"
     property color borderColor: "black"

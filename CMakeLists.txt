@@ -22,6 +22,7 @@ qt_add_qml_module(appLearnAnimationQML
     QML_FILES CustomSlider.qml
     QML_FILES CustomLabel.qml
     QML_FILES DelayedFallingBehavior.qml
+    QML_FILES CustomButton.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
