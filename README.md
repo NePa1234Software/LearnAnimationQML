@@ -16,7 +16,7 @@ Repo URL: https://github.com/NePa1234Software/LearnAnimationQML
 ## Licensing
 
 See the license file and License Folder for details
-- The game is build using the Qt Framework opensource version (https://www.qt.io/licensing/)
+- The app is build using the Qt Framework opensource version (https://www.qt.io/licensing/)
 - WebAssembly build powered by emscription SDK (https://emscripten.org/docs/introducing_emscripten/emscripten_license.html)
 
 ## Screenshots
